@@ -59,8 +59,10 @@
                         <td class="border px-4 py-2">{{ $user->id }}</td>
                         <td class="border px-4 py-2">{{ $user->name }}</td>
                         <td class="border px-4 py-2">{{ $user->email }}</td>
-                        <td class="border px-4 py-2">{{ $user->church->name ?? $user->membership ?? 'N/A' }}</td>
+                        <td class="border px-4 py-2">{{ $user->church->name ?? 'N/A' }}</td>
                         <td class="border px-4 py-2">{{ $user->roles->pluck('name')->join(', ') }}</td>
+                       
+                       
                         <td class="border px-4 py-2 flex gap-2">
                             <!-- Show (Eye) -->
                             <a href="{{ route('users.show', $user->id) }}"

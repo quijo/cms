@@ -108,7 +108,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 
+//============================
+//    Church Routes
+//============================
+use App\Http\Controllers\ChurchController;
 
 
+
+Route::middleware(['auth'])->group(function () {
+
+    // Resource routes for churches
+    Route::resource('churches', ChurchController::class);
+
+    // Optional: extra routes for special actions
+    // Route::get('churches/{church}/members', [ChurchController::class, 'members'])->name('churches.members');
+});
 
 require __DIR__.'/auth.php';

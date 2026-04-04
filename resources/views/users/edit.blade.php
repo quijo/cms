@@ -51,13 +51,26 @@
                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                         </div>
 
-                        <!-- Church -->
-                        <div>
-                            <label for="church" class="block font-medium text-gray-700">Church / Membership</label>
-                            <input id="church" name="church" type="text"
-                                   value="{{ old('church', $user->church) }}"
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        </div>
+                          <!-- Church / Membership -->
+                        <div class="mt-4">
+    <label for="church_id" class="block text-sm font-medium text-gray-700">
+        Church
+    </label>
+
+    <select name="church_id" id="church_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <option value="">Select Church</option>
+
+        @foreach($churches as $church)
+            <option value="{{ $church->id }}" {{ old('church_id') == $church->id ? 'selected' : '' }}>
+                {{ $church->name }}
+            </option>
+        @endforeach
+    </select>
+
+    @error('church_id')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
 
                         <!-- Role -->
                         <div>

@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Church; // ✅ CORRECT
 // use App\Models\Church;
 
 class UserController extends Controller
@@ -51,10 +52,13 @@ class UserController extends Controller
 
    public function create()
 {
+
+
+ $users = User::with('roles')->paginate(10);
+  
     $roles = Role::all(); 
-   
-    // $churches = Church::all(); // All churches
-    return view('users.create', compact('roles'));
+    $churches = Church::all(); // All churches
+    return view('users.create', compact('roles', 'churches', 'users'));
 }
 
 public function store(Request $request)
@@ -63,27 +67,28 @@ public function store(Request $request)
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|string|min:6',
-        'role' => 'required|exists:roles,id', // validate ID exists
+        'role' => 'required|exists:roles,id',
+        'church_id' => 'nullable|exists:churches,id',
     ]);
 
-    // Create user
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
+        'church_id' => $request->church_id, // <-- this will save properly
     ]);
 
-    // Find the role by ID and assign it
-    $role = Role::findOrFail($request->role);
-    $user->assignRole($role); // <-- assign Role object, not ID
+    // Assign role via Spatie
+    $role = Role::findOrFail($request->role); // get the Role model
+    $user->assignRole($role->name);           // pass the role name
 
     return redirect()->route('users.index')->with('success', 'User created successfully.');
 }
     public function edit(User $user)
     {
         $roles = Role::all();
-        
-        return view('users.edit', compact('user', 'roles'));
+        $churches = Church::all(); // All churches
+        return view('users.edit', compact('user', 'roles', 'churches'));
     }
 
    public function update(Request $request, User $user)
@@ -92,13 +97,14 @@ public function store(Request $request)
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $user->id,
         'role' => 'required|exists:roles,id', // validate role exists
+        'church_id' => 'nullable|exists:churches,id', // validate church exists
     ]);
 
     // Update basic info
     $user->update([
         'name' => $request->name,
         'email' => $request->email,
-        'church' => $request->church,
+         'church_id' => $request->church_id, // ✅ corrected
     ]);
 
     // Optional: update password if provided
@@ -127,4 +133,11 @@ public function store(Request $request)
     return redirect()->route('users.index')
                      ->with('success', 'User deleted successfully.');
 }
+
+public function show(User $user)
+{
+    return view('users.show', compact('user'));
+}
+
+
 }
