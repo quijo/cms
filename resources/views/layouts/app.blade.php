@@ -1,36 +1,39 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<x-app-layout>
+    <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-100">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <!-- Mobile sidebar -->
+        <div x-show="sidebarOpen" class="fixed inset-0 z-40 flex md:hidden" x-cloak>
+            <!-- Overlay -->
+            <div @click="sidebarOpen = false" class="fixed inset-0 bg-black opacity-50"></div>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+            <!-- Sidebar panel -->
+            <div class="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+                <x-sidebar :links="$sidebarLinks" />
+            </div>
+        </div>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+        <!-- Desktop sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <x-sidebar :links="$sidebarLinks" />
+        </div>
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col overflow-auto">
+            <!-- Header -->
+            <header class="w-full h-16 flex items-center justify-between px-4 bg-white border-b md:hidden">
+                <button @click="sidebarOpen = true" class="text-gray-700 focus:outline-none">
+                    <!-- Hamburger Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <h1 class="text-xl font-bold">Dashboard</h1>
+            </header>
 
-            <!-- Page Content -->
-            <main>
+            <main class="flex-1 p-6">
                 {{ $slot }}
             </main>
         </div>
-    </body>
-</html>
+    </div>
+</x-app-layout>
