@@ -1,4 +1,3 @@
-<!-- resources/views/layouts/app.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,14 +6,23 @@
     <title>{{ $title ?? 'Dashboard' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="bg-gray-100">
 
-<div class="flex min-h-screen">
+<div x-data="{ open: false }" class="flex min-h-screen">
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-lg hidden md:block">
-        <div class="p-6 border-b">
+    <aside
+        :class="open ? 'block' : 'hidden'"
+        class="w-64 bg-white shadow-lg fixed inset-y-0 left-0 z-50 md:static md:block">
+
+        <div class="p-6 border-b flex justify-between items-center">
             <h2 class="text-xl font-bold">Church CMS</h2>
+
+            <!-- Close button (mobile) -->
+            <button @click="open = false" class="md:hidden text-gray-500">
+                ✕
+            </button>
         </div>
 
         <nav class="p-4 space-y-2">
@@ -53,12 +61,28 @@
         </nav>
     </aside>
 
+    <!-- Overlay (mobile) -->
+    <div x-show="open" @click="open = false"
+         class="fixed inset-0 bg-black opacity-50 z-40 md:hidden"></div>
+
     <!-- Main Content -->
     <div class="flex-1 flex flex-col">
 
         <!-- Topbar -->
         <header class="bg-white shadow px-6 py-4 flex justify-between items-center">
-            <h1 class="text-lg font-semibold">{{ $title ?? 'Dashboard' }}</h1>
+
+            <div class="flex items-center space-x-4">
+                <!-- Burger button -->
+                <button @click="open = true"
+                        class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+
+                <h1 class="text-lg font-semibold">{{ $title ?? 'Dashboard' }}</h1>
+            </div>
 
             <div class="flex items-center space-x-4">
                 <span>{{ Auth::user()->name }}</span>
@@ -68,6 +92,7 @@
                     <button type="submit" class="text-red-500 hover:underline">Logout</button>
                 </form>
             </div>
+
         </header>
 
         <!-- Content -->
