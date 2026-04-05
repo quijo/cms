@@ -10,6 +10,12 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChurchController;
 
+
+//Order matters: static first, dynamic later
+//Static routes like /members/create or /settings/general should always come before parameterized routes like /members/{member} or /settings/{page}
+
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -72,17 +78,21 @@ Route::middleware(['auth', 'can:delete announcements'])->group(function () {
 //    Member Routes
 // ===========================
 
+// Only users with 'create members' can create
+Route::middleware(['auth','can:create members'])->group(function () {
+    Route::get('/members/create', [MemberController::class, 'create'])->name('members.create');
+    Route::post('/members', [MemberController::class, 'store'])->name('members.store');
+});
+
+
+
+
 // Only users with 'view members' can see list or individual members
 Route::middleware(['auth', 'can:view members'])->group(function () {
     Route::get('/members', [MemberController::class, 'index'])->name('members.index');
     Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
 });
 
-// Only users with 'create members' can create
-Route::middleware(['auth', 'can:create members'])->group(function () {
-    Route::get('/members/create', [MemberController::class, 'create'])->name('members.create');
-    Route::post('/members', [MemberController::class, 'store'])->name('members.store');
-});
 
 // Only users with 'edit members' can edit
 Route::middleware(['auth', 'can:edit members'])->group(function () {
@@ -98,7 +108,7 @@ Route::middleware(['auth', 'can:delete members'])->group(function () {
 
 
 // ===========================
-//    Member Routes
+//    Churches Routes
 // ===========================
 // Only Admin role can access settings
 Route::resource('churches', ChurchController::class);
