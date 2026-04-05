@@ -21,7 +21,7 @@
         </div>
 
         <!-- Search & Filter -->
-        <form method="GET" class="flex flex-wrap gap-4 mb-4">
+        {{-- <form method="GET" class="flex flex-wrap gap-4 mb-4">
             <input type="text" name="search" value="{{ request('search') }}"
                    placeholder="Search by name, email, or church"
                    class="border rounded px-3 py-2 flex-1">
@@ -38,7 +38,32 @@
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 Filter
             </button>
-        </form>
+        </form> --}}
+
+
+        <x-filter-bar placeholder="Search users (name, email, church)">
+
+    {{-- Role Filter --}}
+    <select name="role" class="border rounded px-3 py-2">
+        <option value="">All Roles</option>
+        @foreach($roles as $role)
+            <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>
+                {{ ucfirst($role->name) }}
+            </option>
+        @endforeach
+    </select>
+
+    {{-- Church Filter --}}
+    <select name="church" class="border rounded px-3 py-2">
+        <option value="">All Churches</option>
+        @foreach($churches as $church)
+            <option value="{{ $church->id }}" {{ request('church') == $church->id ? 'selected' : '' }}>
+                {{ $church->name }}
+            </option>
+        @endforeach
+    </select>
+
+</x-filter-bar>
 
         <!-- Users Table -->
         <div class="overflow-x-auto">

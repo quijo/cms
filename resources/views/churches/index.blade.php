@@ -5,6 +5,8 @@
         </h2>
     </x-slot>
 
+    
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
@@ -19,7 +21,18 @@
                         {{ session('success') }}
                     </div>
                 @endif
+                
+                   <x-filter-bar placeholder="Search churches...">
+<form method="GET" action="{{ route('churches.index') }}" class="flex gap-2 mb-4 flex-wrap">
+        
+       
 
+    
+
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Search</button>
+        <a href="{{ route('churches.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Reset</a>
+    </form>
+</x-filter-bar>
                 <table class="min-w-full border border-gray-200">
                     <thead>
                         <tr class="bg-gray-100">

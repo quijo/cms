@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Church; // ✅ CORRECT
-// use App\Models\Church;
+
 
 class UserController extends Controller
 {
@@ -17,29 +17,44 @@ class UserController extends Controller
 // ===========================
     public function index(Request $request)
 {
-    $query = User::query();
+    // $query = User::query();
 
-    // Search by name or email
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%");
-        });
-    }
+    // // Search by name or email
+    // if ($request->filled('search')) {
+    //     $search = $request->search;
+    //     $query->where(function($q) use ($search) {
+    //         $q->where('name', 'like', "%{$search}%")
+    //           ->orWhere('email', 'like', "%{$search}%");
+    //     });
+    // }
 
-    // Filter by role
-    if ($request->filled('role')) {
-        $role = $request->role;
-        $query->whereHas('roles', function($q) use ($role) {
-            $q->where('name', $role);
-        });
-    }
+    // // Filter by role
+    // if ($request->filled('role')) {
+    //     $role = $request->role;
+    //     $query->whereHas('roles', function($q) use ($role) {
+    //         $q->where('name', $role);
+    //     });
+    // }
 
-    $users = $query->with('roles')->paginate(10)->withQueryString();
-    $roles = Role::pluck('name'); // For filter dropdown
+    // $users = $query->with('roles')->paginate(10)->withQueryString();
+    // $roles = Role::pluck('name'); // For filter dropdown
 
-    return view('users.index', compact('users', 'roles'));
+    // return view('users.index', compact('users', 'roles'));
+
+
+    $roles = Role::all(); // this is a collection of Role objects
+    $churches = Church::all(); // for church filter
+
+    // Fetch users with search & filters
+    $users = User::query()
+        ->when($request->search, fn($q) => $q->where('name', 'like', "%{$request->search}%")
+            ->orWhere('email', 'like', "%{$request->search}%"))
+        ->when($request->role, fn($q) => $q->role($request->role))
+        ->when($request->church, fn($q) => $q->where('church_id', $request->church))
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('users.index', compact('users', 'roles', 'churches'));
 }
 
 

@@ -6,11 +6,31 @@ use Illuminate\Http\Request;
 
 class ChurchController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $churches = Church::all(); // get all churches
+        $query = Church::query();
+
+        // Apply ID filter
+        if ($request->filled('id')) {
+            $query->where('id', $request->id);
+        }
+        
+ // Search by church number
+    if ($request->filled('church_number')) {
+        $query->where('church_number', 'like', '%' . $request->church_number . '%');
+    }
+
+       if ($request->filled('search')) {
+    $query->where('name', 'like', '%' . $request->search . '%');
+}
+
+        // Paginate results
+        $churches = $query->orderBy('id', 'desc')->paginate(10);
+
         return view('churches.index', compact('churches'));
     }
+
 
     public function create()
     {
