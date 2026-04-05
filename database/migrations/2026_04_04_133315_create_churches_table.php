@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('start_date')->nullable();
             $table->string('contact_address')->nullable();
 
-             $table->enum('essential', ['NYI', 'NMI', 'NDI'])->default('NYI');
+        
             
 
             $table->timestamps();

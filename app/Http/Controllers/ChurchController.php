@@ -14,7 +14,8 @@ class ChurchController extends Controller
 
     public function create()
     {
-        return view('churches.create');
+       
+       return view('churches.create');
     }
 
     public function store(Request $request)
@@ -63,4 +64,13 @@ class ChurchController extends Controller
         $church->delete();
         return redirect()->route('churches.index')->with('success', 'Church deleted successfully.');
     }
+
+    public function show($church)
+{
+    // Find the church by ID, or fail with 404
+    $church = \App\Models\Church::findOrFail($church);
+
+    // Pass the church to the show view
+    return view('churches.show', compact('church'));
+}
 }

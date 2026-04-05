@@ -57,10 +57,12 @@
                class="block px-4 py-2 rounded-lg {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
                Users
             </a>
+            
               <a href="{{ route('churches.index') }}"
                class="block px-4 py-2 rounded-lg {{ request()->routeIs('churches.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
                Churches
             </a>
+        
             @endrole
             
         </nav>

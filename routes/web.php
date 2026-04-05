@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ChurchController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -100,28 +101,6 @@ Route::middleware(['auth', 'can:delete members'])->group(function () {
 //    Member Routes
 // ===========================
 // Only Admin role can access settings
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::get('/settings/{setting}/edit', [SettingController::class, 'edit'])->name('settings.edit');
-    Route::put('/settings/{setting}', [SettingController::class, 'update'])->name('settings.update');
-});
-
-
-
-//============================
-//    Church Routes
-//============================
-use App\Http\Controllers\ChurchController;
-
-
-
-Route::middleware(['auth'])->group(function () {
-
-    // Resource routes for churches
-    Route::resource('churches', ChurchController::class);
-
-    // Optional: extra routes for special actions
-    // Route::get('churches/{church}/members', [ChurchController::class, 'members'])->name('churches.members');
-});
+Route::resource('churches', ChurchController::class);
 
 require __DIR__.'/auth.php';
