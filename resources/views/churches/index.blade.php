@@ -7,89 +7,91 @@
 @stop
 
 @section('content')
-
-    <!-- Add Church Button -->
-    <div class="mb-3 d-flex justify-content-between align-items-center">
-        <h3 class="card-title">All Churches</h3>
-        <a href="{{ route('churches.create') }}" class="btn btn-success">
-            <i class="fas fa-plus"></i> Add Church
-        </a>
-    </div>
-
-    <!-- Success Message -->
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- Filter/Search Form -->
-    <form method="GET" action="{{ route('churches.index') }}" class="mb-3 d-flex flex-wrap gap-2">
-        <input type="text" name="search" placeholder="Search churches..." value="{{ request('search') }}" class="form-control" style="max-width: 250px;">
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a href="{{ route('churches.index') }}" class="btn btn-secondary">Reset</a>
+    {{-- Bulk Delete Form --}}
+    <form action="{{ route('churches.bulkDelete') }}" method="POST" id="bulk-delete-form">
+        @csrf
+        @method('DELETE')
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">All Churches</h3>
+                <div class="card-tools">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete selected churches?')">
+                        Delete Selected
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all"></th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($churches as $church)
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="churches[]" value="{{ $church->id }}" class="select-item">
+                                </td>
+                                <td>{{ $church->id }}</td>
+                                <td>{{ $church->name }}</td>
+                                <td>{{ $church->location }}</td>
+                                <td>
+                                    <a href="{{ route('churches.show', $church->id) }}" class="btn btn-sm btn-info">View</a>
+                                    <a href="{{ route('churches.edit', $church->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteChurch({{ $church->id }})">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">No churches found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer clearfix">
+                {{ $churches->links('pagination::bootstrap-4') }}
+            </div>
+        </div>
     </form>
 
-    <!-- Churches Table -->
-    <div class="card">
-        <div class="card-body table-responsive p-0">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Church Number</th>
-                        <th>Status</th>
-                        <th>Start Date</th>
-                        <th>Contact Address</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($churches as $church)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $church->name }}</td>
-                            <td>{{ $church->church_number }}</td>
-                            <td>{{ ucfirst($church->status) }}</td>
-                            <td>{{ $church->start_date->format('M d, Y') }}</td>
-                            <td>{{ $church->contact_address }}</td>
-                            <td class="d-flex gap-1">
+    {{-- Hidden form for single row delete --}}
+    <form id="delete-form" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 
-                                <!-- View -->
-                                <a href="{{ route('churches.show', $church->id) }}" class="btn btn-sm btn-info" title="View">
-                                    <i class="fas fa-eye"></i>
-                                </a>
+@stop
 
-                                <!-- Edit -->
-                                <a href="{{ route('churches.edit', $church->id) }}" class="btn btn-sm btn-primary" title="Edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
+@section('js')
+<script>
+    // Select/Deselect all checkboxes
+    document.getElementById('select-all').addEventListener('change', function(e){
+        document.querySelectorAll('.select-item').forEach(cb => cb.checked = e.target.checked);
+    });
 
-                                <!-- Delete -->
-                                <form action="{{ route('churches.destroy', $church->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this church?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center">No churches found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="mt-3">
-        {{ $churches->links() }}
-    </div>
-
+    // Single row delete function
+    function deleteChurch(id) {
+        if(confirm('Are you sure you want to delete this church?')) {
+            let form = document.getElementById('delete-form');
+            form.action = `/churches/${id}`; // Make sure your destroy route matches this
+            form.submit();
+        }
+    }
+</script>
 @stop

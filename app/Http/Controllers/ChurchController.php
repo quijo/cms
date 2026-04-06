@@ -93,4 +93,20 @@ class ChurchController extends Controller
     // Pass the church to the show view
     return view('churches.show', compact('church'));
 }
+
+
+public function bulkDelete(Request $request)
+{
+   
+    $request->validate([
+        'churches' => 'required|array',
+        'churches.*' => 'exists:churches,id',
+    ]);
+
+    Church::whereIn('id', $request->churches)->delete();
+
+    return redirect()->route('churches.index')->with('success', 'Selected churches deleted successfully.');
+}
+
+
 }

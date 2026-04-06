@@ -321,10 +321,10 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
+            'text' => 'Dashboard',
+            'url' => '/dashboard',
             'icon' => 'far fa-fw fa-file',
-            'label' => 4,
+            // 'label' => 4,
             'label_color' => 'success',
         ],
         ['header' => 'account_settings'],
@@ -377,20 +377,25 @@ return [
         //     ],
         // ],
         // ['header' => 'LINKS'],
+         [
+            'text' => 'Members',
+            'icon_color' => 'red',
+            'url' => '/members',
+        ],
         [
             'text' => 'Churches',
             'icon_color' => 'red',
             'url' => '/churches',
         ],
         [
-            'text' => 'warning',
+            'text' => 'Givings',
             'icon_color' => 'yellow',
-            'url' => '#',
+            'url' => '/givings',
         ],
         [
-            'text' => 'information',
+            'text' => 'Users',
             'icon_color' => 'cyan',
-            'url' => '#',
+            'url' => '/users',
         ],
     ],
 

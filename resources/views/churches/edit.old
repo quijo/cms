@@ -1,0 +1,88 @@
+{{-- resources/views/churches/edit.blade.php --}}
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Edit Church
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+                
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Edit Church: {{ $church->name }}</h3>
+                    <a href="{{ route('churches.index') }}" class="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                        Back to Churches
+                    </a>
+                </div>
+
+                {{-- Display Validation Errors --}}
+                @if ($errors->any())
+                    <div class="mb-4 p-2 bg-red-100 text-red-700 rounded">
+                        <ul class="list-disc pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            {{-- @endforeach --}}
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('churches.update', $church->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+
+                    {{-- Church Name --}}
+                    <div>
+                        <label for="name" class="block font-medium text-gray-700">Church Name</label>
+                        <input type="text" name="name" id="name" value="{{ old('name', $church->name) }}" 
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+
+                    {{-- Church Number --}}
+                    <div>
+                        <label for="church_number" class="block font-medium text-gray-700">Church Number</label>
+                        <input type="text" name="church_number" id="church_number" value="{{ old('church_number', $church->church_number) }}" 
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+
+                    {{-- Status --}}
+                    <div>
+                        <label for="status" class="block font-medium text-gray-700">Status</label>
+                        <select name="status" id="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="active" {{ old('status', $church->status) == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ old('status', $church->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                    </div>
+
+                    {{-- Start Date --}}
+                    <div>
+                        <label for="start_date" class="block font-medium text-gray-700">Start Date</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ old('start_date', $church->start_date->format('Y-m-d')) }}" 
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+
+                    {{-- Contact Address --}}
+                    <div>
+                        <label for="contact_address" class="block font-medium text-gray-700">Contact Address</label>
+                        <input type="text" name="contact_address" id="contact_address" value="{{ old('contact_address', $church->contact_address) }}" 
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    <div class="flex justify-end gap-2 mt-4">
+                        <a href="{{ route('churches.index') }}" 
+                           class="px-4 py-2 border rounded bg-gray-100 text-black hover:bg-gray-200">
+                            Cancel
+                        </a>
+                        <button type="submit" 
+                                class="px-4 py-2 border rounded bg-black text-white hover:bg-gray-800">
+                            Update Church
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</x-app-layout>

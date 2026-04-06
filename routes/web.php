@@ -113,6 +113,10 @@ Route::middleware(['auth', 'can:delete members'])->group(function () {
 //    Churches Routes
 // ===========================
 // Only Admin role can access settings
+// Bulk delete route (must be BEFORE resource)
+Route::delete('/churches/bulk-delete', [ChurchController::class, 'bulkDelete'])
+    ->name('churches.bulkDelete')
+    ->middleware('auth'); // adjust as needed
 Route::resource('churches', ChurchController::class);
 
 //=========================
