@@ -115,6 +115,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="mt-4">
+    {{ $members->links() }} <!-- Pagination links -->
+</div>
             </div>
         </div>
     </div>

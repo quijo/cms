@@ -56,7 +56,7 @@
                                 <td class="px-4 py-2 border">{{ $church->contact_address }}</td>
                                 <td class="px-4 py-2 flex space-x-2">
 
-    <td class="border px-4 py-2 flex gap-2">
+                             <td class="border px-4 py-2 flex gap-2">
                             <!-- Show (Eye) -->
                             <a href="{{ route('churches.show', $church->id) }}"
                                class="p-2 border rounded bg-gray-100 text-black hover:bg-gray-200"
@@ -106,7 +106,9 @@
                         @endif
                     </tbody>
                 </table>
-
+<div class="mt-4">
+    {{ $churches->links() }} <!-- Pagination links -->
+</div>
             </div>
         </div>
     </div>

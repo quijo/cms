@@ -21,6 +21,17 @@ class Giving extends Model
         'notes',           // optional
     ];
 
+     const TYPES = [
+        'tithesAndOffering',
+        'essentials',
+        'districtBudget',
+        'education',
+        'mission',
+        'WEF',
+        'donation',
+        'others',
+    ];
+
  // Relationships
     public function church()
     {

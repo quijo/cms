@@ -9,7 +9,9 @@ class ChurchSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create 10 churches (no parent-child)
-        Church::factory()->count(10)->create();
+       
+
+       // Create 5 churches
+Church::factory()->count(5)->create();
     }
 }

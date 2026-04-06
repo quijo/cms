@@ -38,8 +38,15 @@ class Church extends Model
         return $this->hasMany(Giving::class);
     }
 
+    
+
     public function church()
 {
     return $this->belongsTo(Church::class);
 }
+
+public function run(): void
+    {
+        Church::factory()->count(5)->create();
+    }
 }
