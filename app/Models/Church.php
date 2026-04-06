@@ -14,7 +14,7 @@ class Church extends Model
         'status',
         'start_date',
         'contact_address',
-        'church_id', // 👈 MUST BE HERE
+        'church_id', 
       
     ];
 

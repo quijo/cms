@@ -11,6 +11,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChurchController;
 use App\Http\Controllers\GivingController;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\DashboardController;
 
 //Order matters: static first, dynamic later
 //Static routes like /members/create or /settings/general should always come before parameterized routes like /members/{member} or /settings/{page}
@@ -127,7 +128,7 @@ Route::middleware(['auth', 'can:view givings'])->group(function () {
     Route::delete('/givings/{giving}', [GivingController::class, 'destroy'])->name('givings.destroy');
 });
 
-
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
 
