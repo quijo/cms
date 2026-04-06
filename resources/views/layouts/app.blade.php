@@ -62,6 +62,11 @@
                class="block px-4 py-2 rounded-lg {{ request()->routeIs('churches.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
                Churches
             </a>
+
+                <a href="{{ route('givings.index') }}"
+               class="block px-4 py-2 rounded-lg {{ request()->routeIs('givings.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
+               Givings
+            </a>
         
             @endrole
             

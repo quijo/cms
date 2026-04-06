@@ -9,7 +9,8 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChurchController;
-
+use App\Http\Controllers\GivingController;
+use Spatie\Permission\Models\Role;
 
 //Order matters: static first, dynamic later
 //Static routes like /members/create or /settings/general should always come before parameterized routes like /members/{member} or /settings/{page}
@@ -112,5 +113,23 @@ Route::middleware(['auth', 'can:delete members'])->group(function () {
 // ===========================
 // Only Admin role can access settings
 Route::resource('churches', ChurchController::class);
+
+//=========================
+// Givings Route /role:admin means this access is only for admin
+//==========================
+Route::middleware(['auth', 'can:view givings'])->group(function () {
+    Route::get('/givings', [GivingController::class, 'index'])->name('givings.index');
+    Route::get('/givings/create', [GivingController::class, 'create'])->name('givings.create');
+    Route::post('/givings', [GivingController::class, 'store'])->name('givings.store');
+    Route::get('/givings/{giving}/edit', [GivingController::class, 'edit'])->name('givings.edit');
+     Route::get('/givings/{giving}', [GivingController::class, 'show'])->name('givings.show');
+    Route::put('/givings/{giving}', [GivingController::class, 'update'])->name('givings.update');
+    Route::delete('/givings/{giving}', [GivingController::class, 'destroy'])->name('givings.destroy');
+});
+
+
+
+
+
 
 require __DIR__.'/auth.php';
