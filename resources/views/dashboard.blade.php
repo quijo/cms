@@ -14,19 +14,19 @@
 
     <x-stat-card
         title="Members" 
-        value="200" 
+        value="prepare the controller to pass data here from db $members" 
         color="blue"
     />
 
     <x-stat-card
         title="Total Giving" 
-        value="500" 
+        value="prepare the controller to pass data here from db $givings" 
         color="green"
     />
 
     <x-stat-card
         title="Churches" 
-        value="6000" 
+        value="prepare the controller to pass data here from db $churches"  
         color="purple"
     />
 
