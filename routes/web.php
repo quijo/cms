@@ -10,6 +10,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ChurchController;
 use App\Http\Controllers\GivingController;
+use App\Http\Controllers\PastorController;
 use Spatie\Permission\Models\Role;
 
 //Order matters: static first, dynamic later
@@ -128,6 +129,10 @@ Route::middleware(['auth', 'can:view givings'])->group(function () {
 });
 
 
+// ===========================
+//    Pastors Routes
+// ===========================
+Route::resource('pastors', PastorController::class);
 
 
 
