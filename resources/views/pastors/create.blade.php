@@ -66,7 +66,7 @@
                     <option value="licensed">Licensed</option>
                     <option value="ordained">Ordained</option>
                     <option value="deacon">Deacon</option>
-                    <option value="local">Local Pastor</option>
+                    <option value="local">Local</option>
                 </select>
             </div>
 

@@ -63,10 +63,17 @@
                Churches
             </a>
 
-                <a href="{{ route('givings.index') }}"
+            <a href="{{ route('pastors.index') }}"
+               class="block px-4 py-2 rounded-lg {{ request()->routeIs('pastors.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
+               Pastors
+            </a>
+
+            <a href="{{ route('givings.index') }}"
                class="block px-4 py-2 rounded-lg {{ request()->routeIs('givings.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
                Givings
             </a>
+
+             
         
             @endrole
             

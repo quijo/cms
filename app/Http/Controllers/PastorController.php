@@ -36,15 +36,13 @@ class PastorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePastorRequest $request)
-    {
-        Pastor::create($request->validate());
-        
-        return redirect()
-        ->route('pastors.index')
-        ->with('success', 'Pastor crated successfully');
+   public function store(StorePastorRequest $request)
+{
+    Pastor::create($request->validated());
 
-    }
+    return redirect()->route('pastors.index')
+        ->with('success', 'Pastor created successfully.');
+}
 
     /**
      * Display the specified resource.
