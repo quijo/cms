@@ -28,8 +28,8 @@ class PastorController extends Controller
      */
     public function create()
     {
-      
-    $churches = Church::all();
+
+        $churches = Church::all();
         return view ('pastors.create',compact('churches'));
     }
 
@@ -57,29 +57,38 @@ class PastorController extends Controller
      */
     public function edit(Pastor $pastor)
     {
+         $churches = Church::all();
 
-          return view('pastors.edit', compact('pastor'));
+          return view('pastors.edit', compact('pastor', 'churches'));
+          
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePastorRequest $request, Pastors $pastor)
-    {
-        $pastor->update($request->validate());
 
-        return redirect()
-        ->route('pastors.index');
-        -with('success', 'Pastors updated successfully');
-    }
+
+    public function update(UpdatePastorRequest $request, Pastor $pastor)
+{
+  
+
+    $pastor->update($request->validated());
+
+
+    return redirect()
+        ->route('pastors.index')
+        ->with('success', 'Pastor updated successfully');
+}
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pastor $pastor)
-    {
-        $pastor->delete();
-        return redirect()
-        ->route('pastors.index');
-    }
+        public function destroy(Pastor $pastor)
+        {
+            $pastor->delete();
+
+            return redirect()
+                ->route('pastors.index')
+                ->with('success', 'Pastor deleted successfully.');
+        }
 }

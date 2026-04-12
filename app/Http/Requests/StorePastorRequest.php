@@ -20,18 +20,19 @@ class StorePastorRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
-        return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:pastors,email',
-            'contact_number' => 'nullable|string|max:20',
-            'status' => 'required|in:licensed,ordained,deacon,local',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'church_id' => 'nullable|exists:churches,id',
-            'role' => 'nullable|in:pas,edu,admin,other',
+ public function rules(): array
+{
+    return [
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'email' => 'unique:pastors,email,' . $this->pastor?->id,
+        'phone' => 'nullable|string|max:20',
+        'status' => 'required|in:licensed,ordained,deacon,local',
+        'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'church_id' => 'nullable|exists:churches,id',
+        'role' => 'nullable|in:pas,edu,admin,other',
+        'address' => 'nullable|string|max:255',
+    ];
 
-        ];
-    }
+}
 }

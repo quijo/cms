@@ -73,8 +73,6 @@
                Givings
             </a>
 
-             
-        
             @endrole
             
         </nav>

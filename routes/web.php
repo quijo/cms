@@ -132,6 +132,8 @@ Route::middleware(['auth', 'can:view givings'])->group(function () {
 // ===========================
 //    Pastors Routes
 // ===========================
+
+
 Route::resource('pastors', PastorController::class);
 
 
