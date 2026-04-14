@@ -9,19 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('members', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+ public function up()
+{
+    Schema::table('givings', function (Blueprint $table) {
+        $table->unsignedBigInteger('member_id')->nullable()->change();
+    });
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('members');
+        Schema::table('givings', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -1,58 +1,141 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Spatie\Permission\Models\Role;
 use App\Models\Member;
+use App\Models\Church;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        dd('Members index');
+   public function index(Request $request)
+{
+    $query = Member::with('church');
+
+    // DEBUG (temporary)
+    // dd($request->all());
+
+    // 🔍 SEARCH
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%")
+              ->orWhereHas('church', function ($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              });
+        });
     }
+
+    // ⛪ FILTER CHURCH
+    if ($request->filled('church')) {
+        $query->where('church_id', $request->church);
+    }
+
+    // 🔄 FILTER STATUS
+    if ($request->filled('status')) {
+        $query->where('is_active', $request->status);
+    }
+
+    $members = $query->paginate(10)->withQueryString();
+
+    $churches = \App\Models\Church::all();
+
+    return view('members.index', compact('members', 'churches'));
+}
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+       $churches = Church::all();
+       $members = Member::all();
+       $users = \App\Models\User::all();
+       return view('members.create', compact('churches', 'members', 'users'));
+     
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+
+
+public function store(Request $request)
+{
+    // Validate input
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'church_id' => 'required|exists:churches,id',
+        'user_id' => 'nullable|exists:users,id',
+        'email' => 'nullable|email|max:255',
+        'contact_number' => 'nullable|string|max:50',
+        'age' => 'nullable|integer|min:0',
+        'sex' => 'nullable|in:male,female',
+        'membership_date' => 'nullable|date',
+        'is_active' => 'sometimes|boolean',
+    ]);
+
+    // Create member
+    $member = Member::create([
+        'name' => $validated['name'],
+        'church_id' => $validated['church_id'],
+        'user_id' => $validated['user_id'] ?? null,
+        'email' => $validated['email'] ?? null,
+        'contact_number' => $validated['contact_number'] ?? null,
+        'age' => $validated['age'] ?? null,
+        'sex' => $validated['sex'] ?? null,
+        'membership_date' => $validated['membership_date'] ?? null,
+        'is_active' => $request->has('is_active') ? true : false,
+    ]);
+
+    // Redirect back to members list with success message
+    return redirect()->route('members.index')->with('success', 'Member added successfully!');
+}
 
     /**
      * Display the specified resource.
      */
-    public function show(Member $member)
-    {
-        //
-    }
+   public function show(Member $member)
+{
+    // Load the related church to avoid N+1 queries
+    $member->load('church');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    return view('members.show', compact('member'));
+}
+
+   // Show the edit form
     public function edit(Member $member)
     {
-        //
+        $churches = Church::all(); // Fetch all churches for the dropdown
+        return view('members.edit', compact('member', 'churches'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update the member
     public function update(Request $request, Member $member)
     {
-        //
+        // Validate input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => "required|email|unique:members,email,{$member->id}", // ignore current member
+            'church_id' => 'nullable|exists:churches,id',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        // Update member
+        $member->name = $validated['name'];
+        $member->email = $validated['email'];
+        $member->church_id = $validated['church_id'] ?? null;
+        $member->is_active = $request->has('is_active'); // checkbox returns true if checked
+        $member->save();
+
+        return redirect()->route('members.index')
+                         ->with('success', 'Member updated successfully!');
     }
 
     /**
@@ -60,6 +143,8 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
-        //
-    }
+         $member->delete();
+    return redirect()->route('members.index')->with('success', 'Member deleted successfully.');
+}
+    
 }
