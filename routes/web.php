@@ -8,6 +8,15 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ChurchController;
+use App\Http\Controllers\GivingController;
+use App\Http\Controllers\PastorController;
+use Spatie\Permission\Models\Role;
+
+//Order matters: static first, dynamic later
+//Static routes like /members/create or /settings/general should always come before parameterized routes like /members/{member} or /settings/{page}
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -71,17 +80,21 @@ Route::middleware(['auth', 'can:delete announcements'])->group(function () {
 //    Member Routes
 // ===========================
 
+// Only users with 'create members' can create
+Route::middleware(['auth','can:create members'])->group(function () {
+    Route::get('/members/create', [MemberController::class, 'create'])->name('members.create');
+    Route::post('/members', [MemberController::class, 'store'])->name('members.store');
+});
+
+
+
+
 // Only users with 'view members' can see list or individual members
 Route::middleware(['auth', 'can:view members'])->group(function () {
     Route::get('/members', [MemberController::class, 'index'])->name('members.index');
     Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
 });
 
-// Only users with 'create members' can create
-Route::middleware(['auth', 'can:create members'])->group(function () {
-    Route::get('/members/create', [MemberController::class, 'create'])->name('members.create');
-    Route::post('/members', [MemberController::class, 'store'])->name('members.store');
-});
 
 // Only users with 'edit members' can edit
 Route::middleware(['auth', 'can:edit members'])->group(function () {
@@ -97,16 +110,31 @@ Route::middleware(['auth', 'can:delete members'])->group(function () {
 
 
 // ===========================
-//    Member Routes
+//    Churches Routes
 // ===========================
 // Only Admin role can access settings
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::get('/settings/{setting}/edit', [SettingController::class, 'edit'])->name('settings.edit');
-    Route::put('/settings/{setting}', [SettingController::class, 'update'])->name('settings.update');
+Route::resource('churches', ChurchController::class);
+
+//=========================
+// Givings Route /role:admin means this access is only for admin
+//==========================
+Route::middleware(['auth', 'can:view givings'])->group(function () {
+    Route::get('/givings', [GivingController::class, 'index'])->name('givings.index');
+    Route::get('/givings/create', [GivingController::class, 'create'])->name('givings.create');
+    Route::post('/givings', [GivingController::class, 'store'])->name('givings.store');
+    Route::get('/givings/{giving}/edit', [GivingController::class, 'edit'])->name('givings.edit');
+     Route::get('/givings/{giving}', [GivingController::class, 'show'])->name('givings.show');
+    Route::put('/givings/{giving}', [GivingController::class, 'update'])->name('givings.update');
+    Route::delete('/givings/{giving}', [GivingController::class, 'destroy'])->name('givings.destroy');
 });
 
 
+// ===========================
+//    Pastors Routes
+// ===========================
+
+
+Route::resource('pastors', PastorController::class);
 
 
 
