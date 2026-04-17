@@ -2,6 +2,17 @@
 <div class="container">
     <h2>Create Pastor</h2>
 
+@if ($errors->any())
+    <div style="color:red;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
     <form action="{{ route('pastors.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 

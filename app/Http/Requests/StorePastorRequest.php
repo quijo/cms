@@ -25,7 +25,7 @@ class StorePastorRequest extends FormRequest
     return [
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
-        'email' => 'unique:pastors,email,' . $this->pastor?->id,
+        'email' => 'nullable|email|unique:pastors,email,' . $this->pastor?->id,
         'phone' => 'nullable|string|max:20',
         'status' => 'required|in:licensed,ordained,deacon,local',
         'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
