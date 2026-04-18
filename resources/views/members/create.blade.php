@@ -94,12 +94,24 @@
                         @error('membership_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
-                    <!-- Status -->
-                    <div class="mb-4 flex items-center space-x-2">
-                        <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-                        <label for="is_active" class="text-gray-700 font-medium">Active</label>
-                        @error('is_active') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    </div>
+                   <!-- Status -->
+<div class="mb-4 flex items-center space-x-2">
+    <input type="hidden" name="is_active" value="0">
+
+<input 
+    type="checkbox" 
+    name="is_active" 
+    id="is_active" 
+    value="1" 
+    {{ old('is_active', 1) == 1 ? 'checked' : '' }}
+>
+
+    <label for="is_active" class="text-gray-700 font-medium">Active</label>
+
+    @error('is_active') 
+        <span class="text-red-500 text-sm">{{ $message }}</span> 
+    @enderror
+</div>
 
                     <!-- Submit -->
                     <div class="mt-6">

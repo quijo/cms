@@ -17,7 +17,7 @@ public function index(Request $request)
 {
     //pulling out users info
     $user = auth()->user();
-
+      
    
    //get all members
     $query = Member::with('church');
@@ -62,18 +62,21 @@ public function index(Request $request)
 
 public function store(Request $request)
 {
+$request->merge([
+    'is_active' => $request->boolean('is_active'),
+]);
     // Validate input
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'church_id' => 'required|exists:churches,id',
-        'user_id' => 'nullable|exists:users,id',
-        'email' => 'nullable|email|max:255',
-        'contact_number' => 'nullable|string|max:50',
-        'age' => 'nullable|integer|min:0',
-        'sex' => 'nullable|in:male,female',
-        'membership_date' => 'nullable|date',
-        'is_active' => 'sometimes|boolean',
-    ]);
+ $validated = $request->validate([
+    'name' => 'required|string|max:255',
+    'church_id' => 'required|exists:churches,id',
+    'user_id' => 'nullable|exists:users,id',
+    'email' => 'nullable|email|max:255',
+    'contact_number' => 'nullable|string|max:50',
+    'age' => 'nullable|integer|min:0',
+    'sex' => 'nullable|in:male,female',
+    'membership_date' => 'nullable|date',
+    'is_active' => 'required|boolean', // ✅ correct
+]);
 
     // Create member
     $member = Member::create([
@@ -112,25 +115,26 @@ public function store(Request $request)
 
     // Update the member
     public function update(Request $request, Member $member)
-    {
-        // Validate input
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => "required|email|unique:members,email,{$member->id}", // ignore current member
-            'church_id' => 'nullable|exists:churches,id',
-            'is_active' => 'nullable|boolean',
-        ]);
+{
+    // Normalize BEFORE validation (optional but clean)
+    $request->merge([
+        'is_active' => $request->boolean('is_active'),
+    ]);
 
-        // Update member
-        $member->name = $validated['name'];
-        $member->email = $validated['email'];
-        $member->church_id = $validated['church_id'] ?? null;
-        $member->is_active = $request->has('is_active'); // checkbox returns true if checked
-        $member->save();
+    // Validate input
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => "required|email|unique:members,email,{$member->id}",
+        'church_id' => 'nullable|exists:churches,id',
+        'is_active' => 'required|boolean',
+    ]);
 
-        return redirect()->route('members.index')
-                         ->with('success', 'Member updated successfully!');
-    }
+    // Update member
+    $member->update($validated);
+
+    return redirect()->route('members.index')
+                     ->with('success', 'Member updated successfully!');
+}
 
     /**
      * Remove the specified resource from storage.
