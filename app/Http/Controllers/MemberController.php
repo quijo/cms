@@ -5,19 +5,28 @@ use Spatie\Permission\Models\Role;
 use App\Models\Member;
 use App\Models\Church;
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-   public function index(Request $request)
+public function index(Request $request)
 {
+    //pulling out users info
+    $user = auth()->user();
+
+   
+   //get all members
     $query = Member::with('church');
 
-    // DEBUG (temporary)
-    // dd($request->all());
+
+   // 🔐 ROLE SCOPING
+    if (!$user->hasRole('Admin')) {
+        $query->where('church_id', $user->church_id);
+    }
 
     // 🔍 SEARCH
     if ($request->filled('search')) {
@@ -25,28 +34,13 @@ class MemberController extends Controller
 
         $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%")
-              ->orWhereHas('church', function ($q) use ($search) {
-                  $q->where('name', 'like', "%{$search}%");
-              });
+              ->orWhere('email', 'like', "%{$search}%");
         });
     }
 
-    // ⛪ FILTER CHURCH
-    if ($request->filled('church')) {
-        $query->where('church_id', $request->church);
-    }
+    $members = $query->paginate(10);
 
-    // 🔄 FILTER STATUS
-    if ($request->filled('status')) {
-        $query->where('is_active', $request->status);
-    }
-
-    $members = $query->paginate(10)->withQueryString();
-
-    $churches = \App\Models\Church::all();
-
-    return view('members.index', compact('members', 'churches'));
+    return view('members.index', compact('members'));
 }
 
     /**

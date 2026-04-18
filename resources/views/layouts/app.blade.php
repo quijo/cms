@@ -44,9 +44,9 @@
                Articles
             </a>
             @endcan
-
+              
             @can('view members')
-            <a href="{{ route('members.index') }}"
+               <a href="{{ route('members.index') }}"
                class="block px-4 py-2 rounded-lg {{ request()->routeIs('members.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
                Members
             </a>
@@ -73,8 +73,15 @@
                Givings
             </a>
 
+            
             @endrole
             
+            @hasanyrole('admin')
+            <a href="{{ route('members.index') }}"
+               class="block px-4 py-2 rounded-lg {{ request()->routeIs('members.*') ? 'bg-blue-600 text-white' : 'hover:bg-blue-100' }}">
+               Members
+            </a>
+            @endhasanyrole
         </nav>
     </aside>
 

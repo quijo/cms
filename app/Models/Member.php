@@ -43,6 +43,6 @@ class Member extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('is_active', false);
     }
 }

@@ -31,4 +31,8 @@ public function church()
 {
     return $this->belongsTo(Church::class);
 }
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }
